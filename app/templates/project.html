@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block title %}{{project.name}}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h1>{{project.name}}</h1><a href="{{ url_for('index') }}">Back to projects</a>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h5>Add an item to your project</h5>
+                <form action="{{ url_for('add_item')}}" method="post">
+                    <input name="item_description" autofocus>
+                    <input name="projectid" value="{{ project.pid }}" type="hidden">
+                    <input type="submit" value="Add">
+                </form>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Date Added</th>
+                        <th>Resolve</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for item in items %}
+                            {% if item.pid == project.pid %}
+                                {% if item.state == "Open" %}
+                                    <td>{{item.description}}</td>
+                                    <td>{{item.opened_at}}</td>
+                                    <td>
+                                        <form action="{{ url_for('resolve_item')}}" method="post">
+                                            <input name="itemid" value="{{ item.id }}" type="hidden">
+                                            <input type="submit" value="Resolve">
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('delete_item')}}" method="post">
+                                            <input name="itemid" value="{{ item.id }}" type="hidden">
+                                            <input type="submit" value="Delete">
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a onclick="toggler(resolved{{ project.pid }})">Resolved</a>
+                            <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Date Added</th>
+                                        <th>Resolve</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {% for item in items %}
+                                            {% if item.pid == project.pid %}
+                                                {% if item.state == "Resolved" %}
+                                                    <td>{{item.description}}</td>
+                                                    <td>{{item.opened_at}}</td>
+                                                    <td>
+                                                        <form action="{{ url_for('resolve_item')}}" method="post">
+                                                            <input name="itemid" value="{{ item.id }}" type="hidden">
+                                                            <input type="submit" value="Resolve">
+                                                        </form>
+                                                    </td>
+                                                    <td>
+                                                        <form action="{{ url_for('delete_item')}}" method="post">
+                                                            <input name="itemid" value="{{ item.id }}" type="hidden">
+                                                            <input type="submit" value="Delete">
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+        </div>
+        
+        <div class="col-md-4">
+            
+            <h5>Add a link</h5>
+            <form action="{{ url_for('add_link') }}" method="post">
+                <input name="projectid" value="{{ project.pid }}" type="hidden">
+                <input name="url">
+                <input type="submit">
+            </form>
+            <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
+                                    <button type="submit" class="btn btn-default">Open Links</button>
+                                    </form>
+            Links
+            <ul class="list-group">
+                {% for each in links %}
+                    <li class="list-group-item clearfix">
+                        <a href="{{ each.url }}">{{ each.url }}</a>
+                        <span class="pull-right">
+                            <form action="{{ url_for('delete_link', id=each.id, pid=project.pid)}}" method="POST">
+                                <button class="btn btn-default pull-right">Delete</button>
+                            </form>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
