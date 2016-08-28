@@ -8,7 +8,8 @@ class User(db.Model):
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True)
-    pwdhash = db.Column(db.String(54))
+    pwdhash = db.Column(db.String(100))
+    projects = db.relationship("Project")
    
     def __init__(self, firstname, lastname, email, password):
         self.firstname = firstname.title()
@@ -28,6 +29,7 @@ class Project(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey('users.uid'))
     name = db.Column(db.String(50))
     items = db.relationship("Item")
+    links = db.relationship("Link")
 
 
 class Item(db.Model):
