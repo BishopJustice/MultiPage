@@ -95,7 +95,7 @@ def add_link():
 def open_links(pid):
     links = db.session.query(Link).filter_by(pid=pid).all()
     for each in links:
-        print webbrowser.open(each.url)
+        webbrowser.open(each.url)
     return redirect(request.referrer)
 
 @app.route('/delete_link/<int:pid>/<int:id>', methods=['POST'])
