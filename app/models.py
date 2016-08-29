@@ -49,7 +49,7 @@ class Link(db.Model):
     __tablename__ = 'links'
     id = db.Column(db.Integer, primary_key = True)
     pid = db.Column(db.Integer, db.ForeignKey('projects.pid'))
-    url = db.Column(db.String(50))
+    url = db.Column(db.String(600))
     
 
 

@@ -27,11 +27,12 @@ def project(pid):
     if user is None:
         return render_template('index.html')
 
-    projects = db.session.query(Project).all()
+    projects = db.session.query(Project).filter_by(uid=user.uid).all()
     links = db.session.query(Link).filter_by(pid=pid).all()
-    project = db.session.query(Project).filter_by(pid=pid).one()
+    project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
     items = db.session.query(Item).filter_by(pid=pid).all()
-    return render_template("project.html", project=project, projects=projects, links=links, items=items)
+    return render_template("project.html", project=project, projects=projects, 
+                            links=links, items=items)
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -82,7 +83,7 @@ def delete_item():
 def add_link():
     project = request.form['projectid']
     url = request.form['url']
-    if url[0:7] != "http://":
+    if url[0:7] != "http://" and url[0:8] != 'https://':
         url = "http://" + url
     link = Link(pid=project, url=url)
     db.session.add(link)

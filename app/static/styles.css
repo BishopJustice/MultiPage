@@ -10,6 +10,10 @@
 
 
 /*Nav_Bar*/
+li.navbar-right {
+    float: right !important;
+  }
+
 /*.navbar-custom {
     background-color:#229922;
     color:#ffffff;
