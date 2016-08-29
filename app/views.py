@@ -18,6 +18,21 @@ def index():
     items = db.session.query(Item).filter_by(uid=user.uid).all()
     return render_template('index.html', projects=projects, user=user, items=items)
 
+@app.route('/project/<int:pid>', methods=['GET'])
+def project(pid):
+    if 'email' not in session:
+        return render_template('index.html')
+ 
+    user = db.session.query(User).filter_by(email = session['email']).first()
+    if user is None:
+        return render_template('index.html')
+
+    projects = db.session.query(Project).filter_by(uid=user.uid).all()
+    links = db.session.query(Link).filter_by(pid=pid).all()
+    project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
+    items = db.session.query(Item).filter_by(pid=pid).all()
+    return render_template("project.html", project=project, projects=projects, 
+                            links=links, items=items)
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -68,32 +83,20 @@ def delete_item():
 def add_link():
     project = request.form['projectid']
     url = request.form['url']
-    if url[0:7] != "http://":
+    if url[0:7] != "http://" and url[0:8] != 'https://':
         url = "http://" + url
     link = Link(pid=project, url=url)
     db.session.add(link)
     db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/project/<int:pid>', methods=['GET'])
-def project(pid):
-    if 'email' not in session:
-        return render_template('index.html')
- 
-    user = db.session.query(User).filter_by(email = session['email']).first()
-    if user is None:
-        return render_template('index.html')
 
-    links = db.session.query(Link).filter_by(pid=pid).all()
-    project = db.session.query(Project).filter_by(pid=pid).one()
-    items = db.session.query(Item).filter_by(pid=pid).all()
-    return render_template("project.html", project=project, links=links, items=items)
 
 @app.route('/open_links/<int:pid>', methods=['POST'])
 def open_links(pid):
     links = db.session.query(Link).filter_by(pid=pid).all()
     for each in links:
-        print webbrowser.open(each.url)
+        webbrowser.open(each.url)
     return redirect(request.referrer)
 
 @app.route('/delete_link/<int:pid>/<int:id>', methods=['POST'])
