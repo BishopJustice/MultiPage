@@ -32,7 +32,7 @@ def project(pid):
     project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
     items = db.session.query(Item).filter_by(pid=pid).all()
     return render_template("project.html", project=project, projects=projects, 
-                            links=links, items=items)
+                            links=links, items=items, user=user)
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -85,7 +85,8 @@ def add_link():
     url = request.form['url']
     if url[0:7] != "http://" and url[0:8] != 'https://':
         url = "http://" + url
-    link = Link(pid=project, url=url)
+    link_name = request.form['link_name']
+    link = Link(pid=project, url=url, link_name=link_name)
     db.session.add(link)
     db.session.commit()
     return redirect(request.referrer)

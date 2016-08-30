@@ -5,8 +5,15 @@
     padding-right: 50px;
 }
 
-
+.list-group-item{
+    overflow:hidden;
+}
 .list-group {line-height:30px}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
 
 
 /*Nav_Bar*/
@@ -14,10 +21,9 @@ li.navbar-right {
     float: right !important;
   }
 
-/*.navbar-custom {
-    background-color:#229922;
-    color:#ffffff;
-    border-radius:0;
+.navbar-custom {
+    background-color: #4CAF50;
+    color: white;
 }
 
 .navbar-custom .navbar-nav > li > a {
@@ -29,7 +35,7 @@ li.navbar-right {
 }
 .navbar-custom .navbar-brand {
     color:#ffffff;
-}*/
+}
 
 
 /*FORMS*/

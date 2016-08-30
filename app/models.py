@@ -50,6 +50,7 @@ class Link(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     pid = db.Column(db.Integer, db.ForeignKey('projects.pid'))
     url = db.Column(db.String(600))
+    link_name= db.Column(db.String(50))
     
 
 

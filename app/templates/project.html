@@ -89,10 +89,14 @@
         
         <div class="col-md-4">
             
-            <h5>Add a link</h5>
+            <h5>Add a Url</h5>
             <form action="{{ url_for('add_link') }}" method="post">
                 <input name="projectid" value="{{ project.pid }}" type="hidden">
-                <input name="url">
+                <h5>Link Name</h5>
+                <input name="link_name">
+                <h5>Link URL</h5>
+                <input name="url"><br>
+                
                 <input type="submit">
             </form>
             <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
@@ -101,8 +105,8 @@
             Links
             <ul class="list-group">
                 {% for each in links %}
-                    <li class="list-group-item clearfix">
-                        <a href="{{ each.url }}">{{ each.url }}</a>
+                    <li class="list-group-item">
+                        <h5 class="list-group-item-heading"><a href="{{ each.url }}">{{each.link_name}}</a></h5>
                         <span class="pull-right">
                             <form action="{{ url_for('delete_link', id=each.id, pid=project.pid)}}" method="POST">
                                 <button class="btn btn-default pull-right">Delete</button>

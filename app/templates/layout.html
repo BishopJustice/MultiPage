@@ -25,19 +25,25 @@
                 {% if 'email' in session %}
                 <ul class="nav navbar-nav">
                     {% for each in projects %}
-                        <li>
-                            <a href="{{ url_for('project', pid=each.pid) }}">{{ each.name }}
+                        <li {% if request.path == url_for('project', pid=each.pid) %}class="active" {% endif %}>
+                            <a href="{{ url_for('project', pid=each.pid) }}">
+                                {{ each.name }}
                             </a>
                         </li>
                     {% endfor %}
                 </ul>
+                
+                
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
+
                 </ul>  
+                <p class="navbar-text navbar-right">Signed in as {{user.firstname}} {{user.lastname}}</p>
                 {% else %}
                 <ul class="nav navbar-nav navbar-right">
                     <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signup') }}">Sign Up</a></li>
                     <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signin') }}">Sign In</a></li>
+
                 </ul>
                 {% endif %}
             </ul>
