@@ -24,9 +24,9 @@
             
                 {% if 'email' in session %}
                 <ul class="nav navbar-nav">
-                    {% for project in projects %}
+                    {% for each in projects %}
                         <li>
-                            <a href="{{ url_for('project', pid=project.pid) }}">{{ project.name }}
+                            <a href="{{ url_for('project', pid=each.pid) }}">{{ each.name }}
                             </a>
                         </li>
                     {% endfor %}
