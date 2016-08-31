@@ -55,7 +55,7 @@ def add_item():
     user = db.session.query(User).filter_by(email = session['email']).first().uid
     project = request.form['projectid']
     description = request.form['item_description']
-    opened_at = unicode(datetime.datetime.now())
+    opened_at = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
     item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
     db.session.add(item)
     db.session.commit()
@@ -65,7 +65,7 @@ def add_item():
 def resolve_item():
     item = db.session.query(Item).filter_by(id = request.form['itemid']).first()
     item.state = "Resolved"
-    item.resolved_at = datetime.datetime.now()
+    item.resolved_at = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)

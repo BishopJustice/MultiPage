@@ -55,8 +55,7 @@
                                 <thead>
                                     <tr>
                                         <th>Task</th>
-                                        <th>Date Added</th>
-                                        <th>Resolve</th>
+                                        <th>Date Resolved</th>
                                         <th>Delete</th>
                                     </tr>
                                 </thead>
@@ -66,13 +65,7 @@
                                             {% if item.pid == project.pid %}
                                                 {% if item.state == "Resolved" %}
                                                     <td>{{item.description}}</td>
-                                                    <td>{{item.opened_at}}</td>
-                                                    <td>
-                                                        <form action="{{ url_for('resolve_item')}}" method="post">
-                                                            <input name="itemid" value="{{ item.id }}" type="hidden">
-                                                            <input type="submit" value="Resolve">
-                                                        </form>
-                                                    </td>
+                                                    <td>{{item.resolved_at}}</td>
                                                     <td>
                                                         <form action="{{ url_for('delete_item')}}" method="post">
                                                             <input name="itemid" value="{{ item.id }}" type="hidden">
@@ -100,13 +93,13 @@
                 <input type="submit">
             </form>
             <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
-                                    <button type="submit" class="btn btn-default">Open Links</button>
+                                    <button type="submit" class="btn btn-success">Open All Links</button>
                                     </form>
             Links
             <ul class="list-group">
                 {% for each in links %}
                     <li class="list-group-item">
-                        <h5 class="list-group-item-heading"><a href="{{ each.url }}">{{each.link_name}}</a></h5>
+                        <a href="{{ each.url }}"><strong>{{each.link_name}}</strong></a>
                         <span class="pull-right">
                             <form action="{{ url_for('delete_link', id=each.id, pid=project.pid)}}" method="POST">
                                 <button class="btn btn-default pull-right">Delete</button>
