@@ -3,10 +3,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
-                <h1>{{project.name}}</h1><a href="{{ url_for('index') }}">Back to projects</a>
+            <div class="col-md-12 project_title">
+                <h1>{{project.name}}</h1>
             </div>
-
         </div>
         <div class="row">
             <div class="col-md-8">
@@ -16,100 +15,96 @@
                     <input name="projectid" value="{{ project.pid }}" type="hidden">
                     <input type="submit" value="Add">
                 </form>
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Task</th>
-                        <th>Date Added</th>
-                        <th>Resolve</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        {% for item in items %}
-                            {% if item.pid == project.pid %}
-                                {% if item.state == "Open" %}
-                                    <td>{{item.description}}</td>
-                                    <td>{{item.opened_at}}</td>
-                                    <td>
-                                        <form action="{{ url_for('resolve_item')}}" method="post">
-                                            <input name="itemid" value="{{ item.id }}" type="hidden">
-                                            <input type="submit" value="Resolve">
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form action="{{ url_for('delete_item')}}" method="post">
-                                            <input name="itemid" value="{{ item.id }}" type="hidden">
-                                            <input type="submit" value="Delete">
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a onclick="toggler(resolved{{ project.pid }})">Resolved</a>
-                            <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;">
-                                <thead>
-                                    <tr>
-                                        <th>Task</th>
-                                        <th>Date Resolved</th>
-                                        <th>Delete</th>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Date Added</th>
+                            <th>Resolve</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for item in items %}
+                                {% if item.pid == project.pid %}
+                                    {% if item.state == "Open" %}
+                                        <td>{{item.description}}</td>
+                                        <td>{{item.opened_at}}</td>
+                                        <td>
+                                            <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
+                                                <button class="btn btn-default">Resolve</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
+                                                <button class="btn btn-default">Delete</button>
+                                            </form>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        {% for item in items %}
-                                            {% if item.pid == project.pid %}
-                                                {% if item.state == "Resolved" %}
-                                                    <td>{{item.description}}</td>
-                                                    <td>{{item.resolved_at}}</td>
-                                                    <td>
-                                                        <form action="{{ url_for('delete_item')}}" method="post">
-                                                            <input name="itemid" value="{{ item.id }}" type="hidden">
-                                                            <input type="submit" value="Delete">
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-        </div>
-        
-        <div class="col-md-4">
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a onclick="toggler(resolved{{ project.pid }})">Resolved</a>
+                <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Date Resolved</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for item in items %}
+                                {% if item.pid == project.pid %}
+                                    {% if item.state == "Resolved" %}
+                                        <td>{{item.description}}</td>
+                                        <td>{{item.resolved_at}}</td>
+                                        <td>
+                                            <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
+                                                <button class="btn btn-default">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             
-            <h5>Add a Url</h5>
-            <form action="{{ url_for('add_link') }}" method="post">
-                <input name="projectid" value="{{ project.pid }}" type="hidden">
-                <h5>Link Name</h5>
-                <input name="link_name">
-                <h5>Link URL</h5>
-                <input name="url"><br>
+            <div class="col-md-4">
                 
-                <input type="submit">
-            </form>
-            <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
-                                    <button type="submit" class="btn btn-success">Open All Links</button>
-                                    </form>
-            Links
-            <ul class="list-group">
-                {% for each in links %}
-                    <li class="list-group-item">
-                        <a href="{{ each.url }}"><strong>{{each.link_name}}</strong></a>
-                        <span class="pull-right">
-                            <form action="{{ url_for('delete_link', id=each.id, pid=project.pid)}}" method="POST">
-                                <button class="btn btn-default pull-right">Delete</button>
-                            </form>
-                        </span>
-                    </li>
-                {% endfor %}
-            </ul>
+                <h5>Add a Url</h5>
+                <form action="{{ url_for('add_link') }}" method="post">
+                    <input name="projectid" value="{{ project.pid }}" type="hidden">
+                    <h5>Link Name</h5>
+                    <input name="link_name">
+                    <h5>Link URL</h5>
+                    <input name="url"><br>
+                    
+                    <input type="submit">
+                </form>
+                <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
+                    <button type="submit" class="btn btn-success">Open All Links</button>
+                </form>
+                Links
+                <ul class="list-group">
+                    {% for each in links %}
+                        <li class="list-group-item">
+                            <a href="{{ each.url }}"><strong>{{each.link_name}}</strong></a>
+                            <span class="pull-right">
+                                <form action="{{ url_for('delete_link', id=each.id)}}" method="POST">
+                                    <button class="btn btn-default pull-right btn-sm">Delete</button>
+                                </form>
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-
 {% endblock %}

@@ -61,18 +61,18 @@ def add_item():
     db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/resolve_item', methods=['POST'])
-def resolve_item():
-    item = db.session.query(Item).filter_by(id = request.form['itemid']).first()
+@app.route('/resolve_item/<int:item_id>', methods=['POST'])
+def resolve_item(item_id):
+    item = db.session.query(Item).filter_by(id = item_id).first()
     item.state = "Resolved"
     item.resolved_at = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/delete_item', methods=['POST'])
-def delete_item():
-    item = db.session.query(Item).filter_by(id = request.form['itemid']).first()
+@app.route('/delete_item/<int:item_id>', methods=['POST'])
+def delete_item(item_id):
+    item = db.session.query(Item).filter_by(id=item_id).first()
     item.state = "Deleted"
     item.resolved_at = datetime.datetime.now()
     db.session.add(item)
@@ -92,7 +92,6 @@ def add_link():
     return redirect(request.referrer)
 
 
-
 @app.route('/open_links/<int:pid>', methods=['POST'])
 def open_links(pid):
     links = db.session.query(Link).filter_by(pid=pid).all()
@@ -100,8 +99,8 @@ def open_links(pid):
         webbrowser.open(each.url)
     return redirect(request.referrer)
 
-@app.route('/delete_link/<int:pid>/<int:id>', methods=['POST'])
-def delete_link(id, pid):
+@app.route('/delete_link/<int:id>', methods=['POST'])
+def delete_link(id):
     link = db.session.query(Link).filter_by(id=id).one()
     db.session.delete(link)
     db.session.commit()

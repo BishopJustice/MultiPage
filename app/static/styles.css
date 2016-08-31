@@ -1,8 +1,11 @@
 
 
-.content{
+.row{
     padding-left: 50px;
     padding-right: 50px;
+}
+.project_title{
+    text-align: center;
 }
 
 .list-group-item{
