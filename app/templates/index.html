@@ -2,36 +2,77 @@
 {% block title %}Test{% endblock %}
 {% block content %}
     {% if 'email' in session %}
-        <div class="container">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="row">
+                    <h1>{{ user.firstname }}'s Multipage</h1>
+                    <h4>Add A Project</h4>
+                    <form  action="{{ url_for('add_project') }}" method="post">
+                        <input id="addproject" name="project_name" autofocus>
+                        <input type="submit" value="Add">
+                    </form>
+                </div>
+            </div>
+            
             <div class="row">
-                <h1>{{ user.firstname }}'s Multipage</h1>
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        {% for project in projects%}
+                            <li class="list-group-item">
+                                <h4 class="pull-left"><a href="{{ url_for('project', pid=project.pid)}}">{{project.name}}</a></h4>
+                                <form  action="{{ url_for('delete_project', pid=project.pid) }}" method="post">
+                                    <button type="submit" class="btn btn-default pull-right">Delete</button>
+                                </form></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Project</th>
+                                    <th>Resolve</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {% for item in items %}
+                                    <td>{{item.description}}</td>
+                                    <td>
+                                        {% for project in projects %}
+                                        {% if item.pid == project.pid %} 
+                                        <a href="{{url_for('project', pid=project.pid)}}">{{project.name}}</a> 
+                                        {%endif%}
+                                        {%endfor%}
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
+                                            <button class="btn btn-default">Resolve</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
+                                            <button class="btn btn-default">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                {% for project in projects%}
-                        <div class="col-md-2">
-                            <h4><a href="{{ url_for('project', pid=project.pid)}}">{{project.name}}</a></h4>
-                        </div>
-                        <div class="col-md-2">
-                            <form  action="{{ url_for('delete_project', pid=project.pid) }}" method="post">
-                                <button type="submit" class="btn btn-default">Delete</button>
-                            </form>
-                        </div>
-                {% endfor %}
+        {% else %}
+            <div class="jumbotron">
+                <h1>MultiPage.me</h1>
+                <p>Welcome to Multipage.me. Signup or signin to revolutionize your workflow.</p>
             </div>
-            </div>
-            <div class="row">
-                <h4>Add A Project</h4>
-                <form  action="{{ url_for('add_project') }}" method="post">
-                    <input id="addproject" name="project_name" autofocus>
-                    <input type="submit" value="Add">
-                </form>
-            </div>
-        </div>
-    {% else %}
-        <div class="jumbotron">
-            <h1>MultiPage.me</h1>
-            <p>Welcome to Multipage.me. Signup or signin to revolutionize your workflow.</p>
-        </div>
-    {% endif %}
-{% endblock %}
+        {% endif %}
+    {% endblock %}

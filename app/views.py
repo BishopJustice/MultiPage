@@ -15,7 +15,7 @@ def index():
     if user is None:
         return render_template('index.html')
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
-    items = db.session.query(Item).filter_by(uid=user.uid).all()
+    items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
     return render_template('index.html', projects=projects, user=user, items=items)
 
 @app.route('/project/<int:pid>', methods=['GET'])
