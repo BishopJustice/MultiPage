@@ -7,19 +7,18 @@
                 <h1>{{ user.firstname }}'s Multipage</h1>
             </div>
             <div class="row">
+                <div class="col-md-6">
                 {% for project in projects%}
-                    <div class="row">
                         <div class="col-md-2">
                             <h4><a href="{{ url_for('project', pid=project.pid)}}">{{project.name}}</a></h4>
                         </div>
                         <div class="col-md-2">
-                            <form  action="{{ url_for('delete_project') }}" method="post">
-                                <input name="project" value="{{project.pid}}" type="hidden">
+                            <form  action="{{ url_for('delete_project', pid=project.pid) }}" method="post">
                                 <button type="submit" class="btn btn-default">Delete</button>
                             </form>
                         </div>
-                    </div>
                 {% endfor %}
+            </div>
             </div>
             <div class="row">
                 <h4>Add A Project</h4>

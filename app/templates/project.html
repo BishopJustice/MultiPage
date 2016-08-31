@@ -26,9 +26,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            {% for item in items %}
-                                {% if item.pid == project.pid %}
-                                    {% if item.state == "Open" %}
+                            {% for item in open_items %}
                                         <td>{{item.description}}</td>
                                         <td>{{item.opened_at}}</td>
                                         <td>
@@ -42,12 +40,10 @@
                                             </form>
                                         </td>
                                     </tr>
-                                {% endif %}
-                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <a onclick="toggler(resolved{{ project.pid }})">Resolved</a>
+                <a onclick="toggler(resolved{{ project.pid }})">{{ resolved_items|length }} Resolved</a>
                 <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;">
                     <thead>
                         <tr>
@@ -58,9 +54,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            {% for item in items %}
-                                {% if item.pid == project.pid %}
-                                    {% if item.state == "Resolved" %}
+                            {% for item in open_items %}
                                         <td>{{item.description}}</td>
                                         <td>{{item.resolved_at}}</td>
                                         <td>
@@ -69,8 +63,6 @@
                                             </form>
                                         </td>
                                     </tr>
-                                {% endif %}
-                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -106,5 +98,10 @@
                 </ul>
             </div>
         </div>
-    </div>
-{% endblock %}
+            <div class="row">
+                <form  action="{{ url_for('delete_project', pid=project.pid) }}" method="post">
+                                <button type="submit" class="btn btn-default">Delete</button>
+                            </form>
+            </div
+        </div>
+    {% endblock %}

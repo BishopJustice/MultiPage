@@ -30,25 +30,33 @@ def project(pid):
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
     links = db.session.query(Link).filter_by(pid=pid).all()
     project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
-    items = db.session.query(Item).filter_by(pid=pid).all()
+    open_items = db.session.query(Item).filter_by(pid=pid, state="Open").all()
+    resolved_items = db.session.query(Item).filter_by(pid=pid, state="Resolved").all()
     return render_template("project.html", project=project, projects=projects, 
-                            links=links, items=items, user=user)
+                            links=links, open_items=open_items, resolved_items=resolved_items, user=user)
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
     user = db.session.query(User).filter_by(email = session['email']).first()
     project = Project(name=request.form['project_name'], uid=user.uid)
+    print request.form['project_name']
+    print user.uid
     db.session.add(project)
     db.session.commit()
     return redirect(request.referrer)
 
-@app.route('/delete_project', methods=['POST'])
-def delete_project():
-    user = db.session.query(User).filter_by(email = session['email']).first()
-    project = db.session.query(Project).filter_by(pid=request.form['project']).one()
+@app.route('/delete_project/<int:pid>', methods=['POST'])
+def delete_project(pid):
+    project = db.session.query(Project).filter_by(pid=pid).first()
     db.session.delete(project)
     db.session.commit()
-    return redirect(request.referrer)
+    project = db.session.query(Project).filter_by(pid=pid).first()
+    if project:
+        print project
+        return redirect(request.referrer)
+    else:
+        print "What?"
+        return redirect(url_for('index'))
 
 @app.route('/add_item', methods=['POST'])
 def add_item():

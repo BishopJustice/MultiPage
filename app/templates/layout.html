@@ -19,35 +19,46 @@
                 href="{{ url_for('index')}}">MultiPage.me</a>
             </div>
             
-                {% if 'email' in session %}
+            {% if 'email' in session %}
                 <ul class="nav navbar-nav">
                     {% for each in projects %}
                         <li {% if request.path == url_for('project', pid=each.pid) %}class="active" {% endif %}>
-                            <a href="{{ url_for('project', pid=each.pid) }}">
-                                {{ each.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                
-                
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
-
-                </ul>  
-                <p class="navbar-text navbar-right">Signed in as {{user.firstname}} {{user.lastname}}</p>
-                {% else %}
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signup') }}">Sign Up</a></li>
-                    <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signin') }}">Sign In</a></li>
-
-                </ul>
-                {% endif %}
+                        <a href="{{ url_for('project', pid=each.pid) }}">
+                            {{ each.name }}
+                        </a>
+                    </li>
+                {% endfor %}
             </ul>
-        </div>
-    </nav>
-    <div class="content">
-        {% block content %}{% endblock %}
-    </div>
+            
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
+            </ul>
+            
+            <p class="navbar-text navbar-right">Signed in as {{user.firstname}} {{user.lastname}}</p>
+            <form class="navbar-form navbar-right" action="{{ url_for('add_project') }}" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Add Project" name="project_name">
+                </div>
+                <button type="submit" class="btn btn-default btn-sm">Add</button>
+            </form>
+        {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signup') }}">Sign Up</a></li>
+                <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signin') }}">Sign In</a></li>
+            </ul>
+        {% endif %}
+    </ul>
+</div>
+</nav>
+<div class="content">
+{% block content %}{% endblock %}
+<!-- <div class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+    <span class="navbar-text">
+      Created by: Luke Greenwood
+    </span>
+  </div> -->
+</div>
+</div>
 </body>
 </html>
