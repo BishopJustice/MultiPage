@@ -15,7 +15,7 @@
                     <input name="projectid" value="{{ project.pid }}" type="hidden">
                     <input type="submit" value="Add">
                 </form>
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover" id="dtable">
                     <thead>
                         <tr>
                             <th>Task</th>
@@ -44,7 +44,7 @@
                     </tbody>
                 </table>
                 <a onclick="toggler(resolved{{ project.pid }})">{{ resolved_items|length }} Resolved</a>
-                <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;">
+                <table class="table table-bordered table-hover" id="resolved{{project.pid}}" style="display:none;" id="dtable">
                     <thead>
                         <tr>
                             <th>Task</th>
