@@ -156,3 +156,7 @@ def signout():
         return redirect(url_for('signin'))
     session.pop('email', None)
     return redirect(url_for('index'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect(url_for('index'))
