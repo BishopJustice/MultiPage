@@ -31,11 +31,11 @@ def index():
 @app.route('/project/<int:pid>', methods=['GET'])
 def project(pid):
     if 'email' not in session:
-        return render_template('index.html')
+        return redirect(url_for('index'))
  
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
-        return render_template('index.html')
+        return redirect(url_for('index'))
 
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
     links = db.session.query(Link).filter_by(pid=pid).all()
