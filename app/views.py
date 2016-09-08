@@ -8,12 +8,13 @@ import webbrowser
 
 @app.route('/')
 def index():
-    form = SignupForm()
     if 'email' not in session:
+        form = SignupForm()
         return render_template('home.html', form=form)
 
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
+        form = SignupForm()
         return render_template('home.html', form=form)
 
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
