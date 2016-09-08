@@ -92,7 +92,7 @@ def signin():
         return redirect(url_for('index'))
                  
     elif request.method == 'GET':
-      return render_template('signin.html', form=form)
+      return redirect(url_for('index'))
 
 @app.route('/signout')
 def signout():
@@ -105,7 +105,7 @@ def signout():
 def add_project():
     name = request.form['project_name']
     if len(name) >= 50:
-        return redirect(request.referrer)
+        return redirect(url_for('index'))
     else:
         user = db.session.query(User).filter_by(email = session['email']).first()
         project = Project(name=name, uid=user.uid)
