@@ -10,16 +10,18 @@ import webbrowser
 def index():
     if 'email' not in session:
         try:
-            form = SignupForm()
-            return render_template('home.html', form=form)
+            signup_form = SignupForm()
+            signin_form = SigninForm()
+            return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
             return("This isn't working")
 
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
         try:
-            form = SignupForm()
-            return render_template('home.html', form=form)
+            signup_form = SignupForm()
+            signin_form = SigninForm()
+            return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
             return("This isn't working")
 
@@ -51,8 +53,53 @@ def account():
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
         return redirect(url_for('signin'))
-    return render_template('account.html', user=user)
+    projects = db.session.query(Project).filter_by(uid=user.uid).all()
+    open_items = db.session.query(Item).filter_by(state="Open", uid=user.uid).all()
+    resolved_items = db.session.query(Item).filter_by(state="Resolved", uid=user.uid).all()
+    return render_template('account.html', user=user, projects=projects,
+                           open_items=open_items, resolved_items=resolved_items)
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+          return render_template('signup.html', form=form)
+        else:
+          joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+          newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data, joined)
+          db.session.add(newuser)
+          db.session.commit()
+          
+          session['email'] = newuser.email
+
+          return redirect(url_for('index'))
+   
+    elif request.method == 'GET':
+        return render_template('signup.html', form=form)
+
+
+
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    form = SigninForm()
+   
+    if request.method == 'POST':
+      if form.validate() == False:
+        return render_template('signin.html', form=form)
+      else:
+        session['email'] = form.email.data
+        return redirect(url_for('index'))
+                 
+    elif request.method == 'GET':
+      return render_template('signin.html', form=form)
+
+@app.route('/signout')
+def signout():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+    session.pop('email', None)
+    return redirect(url_for('index'))
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -135,46 +182,6 @@ def delete_link(id):
 
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = SignupForm()
-    if request.method == 'POST':
-        if form.validate() == False:
-          return render_template('signup.html', form=form)
-        else:
-          joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
-          newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data, joined)
-          db.session.add(newuser)
-          db.session.commit()
-          
-          session['email'] = newuser.email
 
-          return redirect(url_for('index'))
-   
-    elif request.method == 'GET':
-        return render_template('signup.html', form=form)
-
-
-
-@app.route('/signin', methods=['GET', 'POST'])
-def signin():
-    form = SigninForm()
-   
-    if request.method == 'POST':
-      if form.validate() == False:
-        return render_template('signin.html', form=form)
-      else:
-        session['email'] = form.email.data
-        return redirect(url_for('index'))
-                 
-    elif request.method == 'GET':
-      return render_template('signin.html', form=form)
-
-@app.route('/signout')
-def signout():
-    if 'email' not in session:
-        return redirect(url_for('signin'))
-    session.pop('email', None)
-    return redirect(url_for('index'))
 
 

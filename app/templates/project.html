@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}{{project.name}}{% endblock %}
-{% block nav %}
+{% block account_nav %}
 <a class="navbar-text navbar-right" href="{{ url_for('account') }}">{{user.firstname}}'s Account</a>
 {% endblock %}
 {% block content %}

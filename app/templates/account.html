@@ -1,11 +1,25 @@
 {% extends "layout.html" %}
-{% block title %}{{user.firstname}} {%endblock%}
+{% block title %}{{user.firstname}}'s MultiPage' {%endblock%}
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <p>Name: {{ user.firstname }} {{ user.lastname }}</p>
-        <p>Joined: {{ user.joined }} </p>
+        <h1>Account Details</h1>
+        <ul class="list-group">
+        <li class="list-group-item">Name: {{ user.firstname }} {{ user.lastname }}</li>
+        <li class="list-group-item">Email: {{ user.email }}</li>
+        <li class="list-group-item">Joined: {{ user.joined }} </li>
+        <li class="list-group-item">Total Projects: {{ projects|length }} </li>
+        <li class="list-group-item">Open Items: {{ open_items|length }} </li>
+        <li class="list-group-item">Resolved Items: {{ resolved_items|length }} </li>
+        </ul>
     </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{ url_for('signup') }}">Create New Account</a><br>
+        <a href="{{ url_for('signup') }}">Delete Your Account</a>
+    </div>
+
 </div>
 
 

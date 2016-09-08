@@ -1,5 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}MultiPage{% endblock %}
+{% block sign_in %}
+        <form action="{{ url_for('signin') }}" method="post" class="navbar-form navbar-right">
+            {{ signin_form.hidden_tag() }}
+                Email:
+                {{ signin_form.email(class_="form-control") }}
+
+                Password:
+                {{ signin_form.password(class_="form-control") }}
+                {{ signin_form.submit(class_="btn btn-default btn-sm") }}
+        </form>
+{% endblock %}
 {% block content %}
     <div class="jumbotron">
         <div class="row">
@@ -19,38 +30,41 @@
             <div class="col-md-6">
                 <h2>Sign up</h2>
                 
-                {% for message in form.firstname.errors %}
+                {% for message in signup_form.firstname.errors %}
                     <div class="flash">{{ message }}</div>
                 {% endfor %}
                 
-                {% for message in form.lastname.errors %}
+                {% for message in signup_form.lastname.errors %}
                     <div class="flash">{{ message }}</div>
                 {% endfor %}
                 
-                {% for message in form.email.errors %}
+                {% for message in signup_form.email.errors %}
                     <div class="flash">{{ message }}</div>
                 {% endfor %}
                 
-                {% for message in form.password.errors %}
+                {% for message in signup_form.password.errors %}
                     <div class="flash">{{ message }}</div>
                 {% endfor %}
-                
-                <form action="{{ url_for('signup') }}" method=post>
-                    {{ form.hidden_tag() }}
-                    
-                    {{ form.firstname.label }}
-                    {{ form.firstname }}
-                    
-                    {{ form.lastname.label }}
-                    {{ form.lastname }}
-                    
-                    {{ form.email.label }}
-                    {{ form.email }}
-                    
-                    {{ form.password.label }}
-                    {{ form.password }}
-                    
-                    {{ form.submit }}
+                <form action="{{ url_for('signup') }}" method="post">
+                    {{ signup_form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ signup_form.firstname.label }}
+                        {{ signup_form.firstname(class_="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ signup_form.lastname.label }}
+                        {{ signup_form.lastname(class_="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ signup_form.email.label }}
+                        {{ signup_form.email(class_="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ signup_form.password.label }}
+                        {{ signup_form.password(class_="form-control") }}
+                    </div>
+                    <br>
+                    {{ signup_form.submit(class_="btn btn-default") }}
                 </form>
             </div>
             <div>

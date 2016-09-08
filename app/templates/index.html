@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}MultiPage{% endblock %}
-{% block nav %}<a class="navbar-text navbar-right" href="{{ url_for('account') }}">{{user.firstname}}'s Account</a>{% endblock %}
+{% block account_nav %}<a class="navbar-text navbar-right" href="{{ url_for('account') }}">{{user.firstname}}'s Account</a>{% endblock %}
 {% block content %}
         <div class="container-fluid">
             <div class="col-md-12">
