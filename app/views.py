@@ -14,7 +14,7 @@ def index():
             signin_form = SigninForm()
             return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
-            return("This isn't working")
+            return("Email is not in session")
 
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
@@ -23,11 +23,11 @@ def index():
             signin_form = SigninForm()
             return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
-            return("This isn't working")
+            return("User is None")
 
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
     items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
-    return render_template('index.html', projects=projects, user=user, items=items)
+    return render_template('index.html', projects=projects, user=user, items=items, message="")
    
 
 @app.route('/project/<int:pid>', methods=['GET'])
@@ -103,13 +103,15 @@ def signout():
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
-    user = db.session.query(User).filter_by(email = session['email']).first()
-    project = Project(name=request.form['project_name'], uid=user.uid)
-    print request.form['project_name']
-    print user.uid
-    db.session.add(project)
-    db.session.commit()
-    return redirect(request.referrer)
+    name = request.form['project_name']
+    if len(name) >= 50:
+        return redirect(request.referrer)
+    else:
+        user = db.session.query(User).filter_by(email = session['email']).first()
+        project = Project(name=name, uid=user.uid)
+        db.session.add(project)
+        db.session.commit()
+        return redirect(request.referrer)
 
 @app.route('/delete_project/<int:pid>', methods=['POST'])
 def delete_project(pid):

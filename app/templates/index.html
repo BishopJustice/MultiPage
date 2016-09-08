@@ -7,9 +7,9 @@
                 <div class="row">
                     <h1>{{ user.firstname }}'s Multipage</h1>
                     <h4>Add A Project</h4>
-                    <form  action="{{ url_for('add_project') }}" method="post">
+                    <form  action="{{ url_for('add_project') }}" onclick="check_project_len()" method="post">
                         <input id="addproject" name="project_name" autofocus>
-                        <input type="submit" value="Add">
+                        <input type="submit" value="Add" >
                     </form>
                 </div>
             </div>
