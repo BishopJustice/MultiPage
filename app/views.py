@@ -44,6 +44,15 @@ def project(pid):
     resolved_items = db.session.query(Item).filter_by(pid=pid, state="Resolved").all()
     return render_template("project.html", project=project, projects=projects, 
                             links=links, open_items=open_items, resolved_items=resolved_items, user=user)
+@app.route('/account')
+def account():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+    user = db.session.query(User).filter_by(email = session['email']).first()
+    if user is None:
+        return redirect(url_for('signin'))
+    return render_template('account.html', user=user)
+
 
 @app.route('/add_project', methods=['POST'])
 def add_project():
@@ -168,10 +177,4 @@ def signout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
-@app.route('/account')
-def account():
-    if 'email' not in session:
-        return redirect(url_for('signin'))
-    else:
-        user = db.session.query(User).filter_by(email = session['email']).first()
-        return render_template('account.html', user=user)
+
