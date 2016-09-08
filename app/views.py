@@ -8,15 +8,18 @@ import webbrowser
 
 @app.route('/')
 def index():
+    form = SignupForm()
     if 'email' not in session:
-        return render_template('index.html')
- 
+        return render_template('home.html', form=form)
+
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
-        return render_template('index.html')
+        return render_template('home.html', form=form)
+
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
     items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
     return render_template('index.html', projects=projects, user=user, items=items)
+   
 
 @app.route('/project/<int:pid>', methods=['GET'])
 def project(pid):
@@ -122,8 +125,9 @@ def signup():
     if request.method == 'POST':
         if form.validate() == False:
           return render_template('signup.html', form=form)
-        else:   
-          newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data)
+        else:
+          joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+          newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data, joined)
           db.session.add(newuser)
           db.session.commit()
           
@@ -157,6 +161,10 @@ def signout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return redirect(url_for('index'))
+@app.route('/account')
+def account():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+    else:
+        user = db.session.query(User).filter_by(email = session['email']).first()
+        return render_template('account.html', user=user)

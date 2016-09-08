@@ -19,26 +19,10 @@ table{
     margin-top: 46px;
 }
 
-/*Nav_Bar*/
-li.navbar-right {
-    float: right !important;
-  }
-
-.navbar-custom {
-    background-color: #4CAF50;
-    color: white;
+.navbar {
+    margin-bottom: 0;
 }
 
-.navbar-custom .navbar-nav > li > a {
-    color:#fff;
-}
-.navbar-custom .navbar-nav > .active > a, .navbar-nav > .active > a:hover, .navbar-nav > .active > a:focus {
-    color: #ffffff;
-    background-color:transparent;
-}
-.navbar-custom .navbar-brand {
-    color:#ffffff;
-}
 
 
 /*FORMS*/

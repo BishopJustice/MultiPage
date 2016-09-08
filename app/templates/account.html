@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}{{user.firstname}} {%endblock%}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <p>Name: {{ user.firstname }} {{ user.lastname }}</p>
+        <p>Joined: {{ user.joined }} </p>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

@@ -9,13 +9,14 @@ class User(db.Model):
     lastname = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True)
     pwdhash = db.Column(db.String(100))
-    projects = db.relationship("Project")
+    joined = db.Column(db.String(200))
    
-    def __init__(self, firstname, lastname, email, password):
+    def __init__(self, firstname, lastname, email, password, joined):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
         self.email = email.lower()
         self.set_password(password)
+        self.joined = joined
      
     def set_password(self, password):
         self.pwdhash = generate_password_hash(password)

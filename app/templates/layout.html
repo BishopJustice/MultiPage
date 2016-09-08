@@ -35,10 +35,10 @@
             </ul>
             
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
+                <li><a  href="{{ url_for('signout') }}">Sign Out</a></li>
             </ul>
             
-            <p class="navbar-text navbar-right">Signed in as {{user.firstname}} {{user.lastname}}</p>
+            <a class="navbar-text navbar-right" href="{{ url_for('account') }}">{{user.firstname}}'s Account</a>
             <form class="navbar-form navbar-right" action="{{ url_for('add_project') }}" method="post">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Add Project" name="project_name">
@@ -46,7 +46,9 @@
                 <button type="submit" class="btn btn-default btn-sm">Add</button>
             </form>
         {% else %}
+        
             <ul class="nav navbar-nav navbar-right">
+                {% block nav %}{% endblock %}
                 <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signup') }}">Sign Up</a></li>
                 <li><a class="nav navbar-nav {% if request.path == '/contact' %}"active"{% endif %}" href="{{ url_for('signin') }}">Sign In</a></li>
             </ul>
@@ -56,12 +58,6 @@
 </nav>
 <div class="content">
 {% block content %}{% endblock %}
-<!-- <div class="navbar navbar-default navbar-fixed-bottom">
-  <div class="container">
-    <span class="navbar-text">
-      Created by: Luke Greenwood
-    </span>
-  </div> -->
 </div>
 </div>
 </body>
