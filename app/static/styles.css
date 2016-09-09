@@ -39,7 +39,21 @@ form label {
     margin-bottom: 0px
 }
 
+.glyphicon {
+    font-size: 3em;
+}
 
+.jumbotron{
+    padding-top: 30px;
+}
+
+.navbar-brand{
+    font-size: 1.5em;
+}
+
+#error{
+    display: none;
+}
  /*
 form input#name,
 form input#email,

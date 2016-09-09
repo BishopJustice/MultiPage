@@ -83,14 +83,14 @@
                     
                     <input type="submit">
                 </form>
-                <form action="{{ url_for('open_links', pid=project.pid)}}" method="POST">
-                    <button type="submit" class="btn btn-success">Open All Links</button>
-                </form>
-                Links
+                    <button type="submit" class="btn btn-success" onclick="open_links(); toggler(error)">Open All Links</button>
+                    <br>
+                    <span id="error"><small>If only one linked opened, click on the red button in the url bar to turn off popup blocking for this site. We promise to only pop up your links.</small></span>
+                    <br>
                 <ul class="list-group">
                     {% for each in links %}
                         <li class="list-group-item">
-                            <a href="{{ each.url }}"><strong>{{each.link_name}}</strong></a>
+                            <a href="{{ each.url }}" target="_blank" class="url"><strong>{{each.link_name}}</strong></a>
                             <span class="pull-right">
                                 <form action="{{ url_for('delete_link', id=each.id)}}" method="POST">
                                     <button class="btn btn-default pull-right btn-sm">Delete</button>

@@ -14,7 +14,7 @@ def index():
             signin_form = SigninForm()
             return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
-            return("Email is not in session")
+            return redirect(url_for('signout'))
 
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
@@ -23,7 +23,7 @@ def index():
             signin_form = SigninForm()
             return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
         except:
-            return("User is None")
+            return redirect(url_for('signout'))
 
     projects = db.session.query(Project).filter_by(uid=user.uid).all()
     items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
@@ -85,14 +85,14 @@ def signin():
     form = SigninForm()
    
     if request.method == 'POST':
-      if form.validate() == False:
-        return render_template('signin.html', form=form)
-      else:
-        session['email'] = form.email.data
+        if form.validate() == False:
+            return render_template('signin.html', form=form)
+        else:
+            session['email'] = form.email.data
         return redirect(url_for('index'))
                  
     elif request.method == 'GET':
-      return redirect(url_for('index'))
+        return redirect(url_for('index'))
 
 @app.route('/signout')
 def signout():
@@ -165,14 +165,6 @@ def add_link():
     link = Link(pid=project, url=url, link_name=link_name)
     db.session.add(link)
     db.session.commit()
-    return redirect(request.referrer)
-
-
-@app.route('/open_links/<int:pid>', methods=['POST'])
-def open_links(pid):
-    links = db.session.query(Link).filter_by(pid=pid).all()
-    for each in links:
-        webbrowser.open(each.url)
     return redirect(request.referrer)
 
 @app.route('/delete_link/<int:id>', methods=['POST'])

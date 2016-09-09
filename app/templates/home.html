@@ -1,34 +1,55 @@
 {% extends "layout.html" %}
 {% block title %}MultiPage{% endblock %}
 {% block sign_in %}
-        <form action="{{ url_for('signin') }}" method="post" class="navbar-form navbar-right">
-            {{ signin_form.hidden_tag() }}
-                Email:
-                {{ signin_form.email(class_="form-control") }}
-
-                Password:
-                {{ signin_form.password(class_="form-control") }}
-                {{ signin_form.submit(class_="form-control btn-sm") }}
-        </form>
+    <form action="{{ url_for('signin') }}" method="post" class="navbar-form navbar-right">
+        {{ signin_form.hidden_tag() }}
+        Email:
+        {{ signin_form.email(class_="form-control") }}
+        Password:
+        {{ signin_form.password(class_="form-control") }}
+        {{ signin_form.submit(class_="form-control btn-sm") }}
+    </form>
 {% endblock %}
 {% block content %}
-    <div class="jumbotron">
         <div class="row">
             <div class="col-md-6">
-                <h2>Track all of your tasks and links in one easily accesable place</h2>
-                <div class="list-group">
-                    <a href="#" class="list-group-item active">
-                        <h4 class="list-group-item-heading">Features</h4>
-                    </a>
-                    <li class="list-group-item">Custom ToDo Lists</li>
-                    <li class="list-group-item">Link Collection</li>
-                    <li class="list-group-item">Auto Link Opening</li>
-                    <li class="list-group-item">Project Management</li>
-                    <li class="list-group-item">Continuos Development</li>
+                <div class="page-header">
+                    <h1>MultiPage.me</h1>
+                    <h2>Optomize your workflow</h2>
+                </div>
+                
+                <div class="media">
+                    <div class="media-left media-middle">
+                        <a href="#">
+                            <span class="glyphicon glyphicon-th-list" ></span>
+                        </a>
+                    </div>
+                    <div class="media-body media-right">
+                        <h4 class="media-heading">Project Organization</h4>
+                        <p>Custom projects with unique workspaces</p>
+                    </div><br>
+                    <div class="media-left media-middle">
+                        <a href="#">
+                            <span class="glyphicon glyphicon-link" ></span>
+                        </a>
+                    </div>
+                    <div class="media-body media-right">
+                        <h4 class="media-heading">Link Management</h4>
+                        <p>Project specific links and bulk opening functionality</p>
+                    </div><br>
+                    <div class="media-left media-middle">
+                        <a href="#">
+                            <span class="glyphicon glyphicon-ok" ></span>
+                        </a>
+                    </div>
+                    <div class="media-body media-right">
+                        <h4 class="media-heading">Custom ToDo Lists</h4>
+                        <p>A master todo list combined with seperate project based ones</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <h2>Sign up</h2>
+                <h3>Sign up</h3>
                 
                 {% for message in signup_form.firstname.errors %}
                     <div class="flash">{{ message }}</div>
@@ -67,6 +88,8 @@
                     {{ signup_form.submit(class_="btn btn-default") }}
                 </form>
             </div>
-            <div>
-            </div>
+        </div>
+
+
+
         {% endblock %}
