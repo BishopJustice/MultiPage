@@ -1,10 +1,11 @@
-function toggler(id){
-    $(id).toggle()
-}
-
 $(document).ready(function() {
                 $('#dtable').DataTable();
             } );
+
+
+function toggler(id){
+    $(id).toggle()
+}
 
 function check_project_len(){
     item = document.getElementById('addproject').value;
