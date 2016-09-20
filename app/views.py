@@ -3,18 +3,15 @@ from app import db, app
 from models import User, Project, Item, Link
 from forms import SignupForm, SigninForm
 import datetime
-import webbrowser
 
 
 @app.route('/')
 def index():
     if 'email' not in session:
-        try:
-            signup_form = SignupForm()
-            signin_form = SigninForm()
-            return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
-        except:
-            return redirect(url_for('signout'))
+        signup_form = SignupForm()
+        signin_form = SigninForm()
+        return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
+
 
     user = db.session.query(User).filter_by(email = session['email']).first()
     if user is None:
@@ -39,11 +36,15 @@ def project(pid):
     if user is None:
         return redirect(url_for('index'))
 
-    projects = db.session.query(Project).filter_by(uid=user.uid).all()
-    links = db.session.query(Link).filter_by(pid=pid).all()
-    project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
-    open_items = db.session.query(Item).filter_by(pid=pid, state="Open").all()
-    resolved_items = db.session.query(Item).filter_by(pid=pid, state="Resolved").all()
+    try:
+        project = db.session.query(Project).filter_by(pid=pid, uid=user.uid).one()
+        projects = db.session.query(Project).filter_by(uid=user.uid).all()
+        links = db.session.query(Link).filter_by(pid=pid).all()
+        open_items = db.session.query(Item).filter_by(pid=pid, state="Open").all()
+        resolved_items = db.session.query(Item).filter_by(pid=pid, state="Resolved").all()
+
+    except:
+        return redirect(url_for('index'))
     return render_template("project.html", project=project, projects=projects, 
                             links=links, open_items=open_items, resolved_items=resolved_items, user=user)
 @app.route('/account')
@@ -61,34 +62,34 @@ def account():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = SignupForm()
+    signup_form = SignupForm()
+    signin_form = SigninForm()
     if request.method == 'POST':
-        if form.validate() == False:
-          return render_template('signup.html', form=form)
+        if signup_form.validate() == False:
+          return render_template('home.html', signin_form=signin_form, signup_form=signup_form)
         else:
           joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
-          newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data, joined)
+          newuser = User(signup_form.firstname.data, signup_form.lastname.data, signup_form.email.data, signup_form.password.data, joined)
           db.session.add(newuser)
           db.session.commit()
-          
           session['email'] = newuser.email
-
           return redirect(url_for('index'))
    
     elif request.method == 'GET':
-        return render_template('signup.html', form=form)
+        return redirect(url_for('index'))
 
 
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
-    form = SigninForm()
+    signup_form = SignupForm()
+    signin_form = SigninForm()
    
     if request.method == 'POST':
-        if form.validate() == False:
-            return render_template('signin.html', form=form)
+        if signin_form.validate() == False:
+            return render_template('home.html', signin_form=signin_form, signup_form=signup_form)
         else:
-            session['email'] = form.email.data
+            session['email'] = signin_form.email.data
         return redirect(url_for('index'))
                  
     elif request.method == 'GET':
@@ -96,8 +97,6 @@ def signin():
 
 @app.route('/signout')
 def signout():
-    if 'email' not in session:
-        return redirect(url_for('signin'))
     session.pop('email', None)
     return redirect(url_for('index'))
 

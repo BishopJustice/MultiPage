@@ -3,8 +3,14 @@
 {% block sign_in %}
     <form action="{{ url_for('signin') }}" method="post" class="navbar-form navbar-right">
         {{ signin_form.hidden_tag() }}
+        {% for message in signin_form.email.errors %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
         Email:
         {{ signin_form.email(class_="form-control") }}
+        {% for message in signin_form.password.errors %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
         Password:
         {{ signin_form.password(class_="form-control") }}
         {{ signin_form.submit(class_="form-control btn-sm") }}
