@@ -128,10 +128,8 @@ def delete_project(pid):
     db.session.commit()
     project = db.session.query(Project).filter_by(pid=pid).first()
     if project:
-        print project
         return redirect(request.referrer)
     else:
-        print "What?"
         return redirect(url_for('index'))
 
 @app.route('/add_item', methods=['POST'])
