@@ -4,6 +4,12 @@ from models import User, Project, Item, Link
 from forms import SignupForm, SigninForm
 import datetime
 
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(minutes=30)
+
 @app.route('/')
 def index():
     if 'email' not in session:
@@ -124,7 +130,11 @@ def add_project():
 @app.route('/delete_project/<int:pid>', methods=['POST'])
 def delete_project(pid):
     project = db.session.query(Project).filter_by(pid=pid).first()
+    items = db.session.query(Item).filter_by(pid=pid).all()
+    print items
     db.session.delete(project)
+    for each in items:
+        db.session.delete(each)
     db.session.commit()
     project = db.session.query(Project).filter_by(pid=pid).first()
     if project:
