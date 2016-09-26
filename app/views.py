@@ -4,12 +4,6 @@ from models import User, Project, Item, Link
 from forms import SignupForm, SigninForm
 import datetime
 
-
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-    app.permanent_session_lifetime = datetime.timedelta(minutes=30)
-
 @app.route('/')
 def index():
     if 'email' not in session:
