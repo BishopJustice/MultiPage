@@ -3,7 +3,7 @@ from wtforms.fields import TextField, BooleanField, TextAreaField, SubmitField, 
 from wtforms.validators import Required, ValidationError
 from wtforms import validators
 from models import User
-from app import db
+from app import Session
 
 
 class ContactForm(Form):
@@ -26,8 +26,8 @@ class SignupForm(Form):
     def validate(self):
       if not Form.validate(self):
           return False
-     
-      user = db.session.query(User).filter_by(email = self.email.data.lower()).first()
+      db_session = Session()
+      user = db_session.query(User).filter_by(email = self.email.data.lower()).first()
       if user:
           self.email.errors.append("That email is already taken")
           return False
@@ -45,8 +45,8 @@ class SigninForm(Form):
     def validate(self):
         if not Form.validate(self):
             return False
-       
-        user = db.session.query(User).filter_by(email = self.email.data.lower()).first()
+        db_session = Session()
+        user = db_session.query(User).filter_by(email = self.email.data.lower()).first()
         if user and user.check_password(self.password.data):
             return True
         else:
