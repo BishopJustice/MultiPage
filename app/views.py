@@ -125,10 +125,9 @@ def add_project():
 def delete_project(pid):
     project = db.session.query(Project).filter_by(pid=pid).first()
     items = db.session.query(Item).filter_by(pid=pid).all()
-    print items
     db.session.delete(project)
     for each in items:
-        db.session.delete(each)
+        each.state = "Project Deleted"
     db.session.commit()
     project = db.session.query(Project).filter_by(pid=pid).first()
     if project:
@@ -160,7 +159,6 @@ def resolve_item(item_id):
 def delete_item(item_id):
     item = db.session.query(Item).filter_by(id=item_id).first()
     item.state = "Deleted"
-    item.resolved_at = datetime.datetime.now()
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
