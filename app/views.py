@@ -141,7 +141,10 @@ def add_item():
     project = request.form['projectid']
     description = request.form['item_description']
     opened_at = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
-    item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
+    if project:
+        item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
+    else:
+        item = Item(uid=user, description=description, state="Open", opened_at=opened_at)
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
@@ -182,7 +185,8 @@ def delete_link(id):
     db.session.commit()
     return redirect(request.referrer)
 
-
+# @app.route('/assign_project', methods=['POST'])
+# def assign_project():
 
 
 
