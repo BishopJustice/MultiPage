@@ -46,22 +46,52 @@
                                 {% if not item.pid %}
                                     <td>{{item.description}}</td>
                                     <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown-toggle" data-toggle="dropdown">Choose
-                                            <span class="caret"></span></button>
-                                            <ul class="dropdown-menu">
+                                        <form action="{{ url_for('assign_project') }}" method="POST">
+                                            <input type="hidden" name="item_id" value="{{item.id}}">
+                                            <select name='project_id' onchange='this.form.submit()'>
+                                                <option>Project</option>
                                                 {% for project in projects%}
-                                                    <li>
-                                                        <form action="{{ url_for('assign_project') }}" method="POST">
-                                                            <input value="{{project.name}}" type="submit" class="btn btn-link nolink">
-                                                            <input name="item_id" value="{{ item.id }}" type="hidden">
-                                                            <input name="project_id" value="{{ project.pid }}" type="hidden">
-                                                            
-                                                        </form>
-                                                    </li>
+                                                    <option value="{{project.pid}}">{{project.name}}</option>
                                                 {% endfor %}
-                                            </ul>
-                                        </div>
+                                            </select>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
+                                        <button class="btn btn-default">Resolve</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
+                                        <button class="btn btn-default">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="table table-bordered table-hover" id="dtable">
+                <h4>All Tasks</h4>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Project</th>
+                        <th>Resolve</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for item in items %}
+                            <td>{{item.description}}</td>
+                            <td>
+                                {% for project in projects %}
+                                    {% if item.pid == project.pid %}
+                                        <a href="{{url_for('project', pid=project.pid)}}">{{project.name}}</a>
+                                        {%endif%}
+                                        {%endfor%}
                                     </td>
                                     <td>
                                         <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
@@ -74,45 +104,9 @@
                                         </form>
                                     </td>
                                 </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <table class="table table-bordered table-hover" id="dtable">
-                <h4>All Tasks</h4>
-                    <thead>
-                        <tr>
-                            <th>Task</th>
-                            <th>Project</th>
-                            <th>Resolve</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {% for item in items %}
-                                <td>{{item.description}}</td>
-                                <td>
-                                    {% for project in projects %}
-                                        {% if item.pid == project.pid %}
-                                            <a href="{{url_for('project', pid=project.pid)}}">{{project.name}}</a>
-                                            {%endif%}
-                                            {%endfor%}
-                                        </td>
-                                        <td>
-                                            <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
-                                                <button class="btn btn-default">Resolve</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
-                                                <button class="btn btn-default">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-            {% endblock %}
+            </div>
+        {% endblock %}
