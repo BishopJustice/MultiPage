@@ -18,14 +18,10 @@ def index():
         signin_form = SigninForm()
         return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
 
-    try:
-        projects = db.session.query(Project).filter_by(uid=user.uid).all()
-        items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
-        return render_template('index.html', projects=projects, user=user, items=items, message="")
-    except:
-        signup_form = SignupForm()
-        signin_form = SigninForm()
-        return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
+    projects = db.session.query(Project).filter_by(uid=user.uid).all()
+    items = db.session.query(Item).filter_by(uid=user.uid, state="Open").order_by(Item.opened_at).all()
+    return render_template('index.html', projects=projects, user=user, items=items, message="")
+
    
 
 @app.route('/project/<int:pid>', methods=['GET'])
