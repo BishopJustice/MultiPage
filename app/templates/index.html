@@ -49,7 +49,7 @@
                                         <form action="{{ url_for('assign_project') }}" method="POST">
                                             <input type="hidden" name="item_id" value="{{item.id}}">
                                             <select name='project_id' onchange='this.form.submit()'>
-                                                <option>Project</option>
+                                                <option>Choose</option>
                                                 {% for project in projects%}
                                                     <option value="{{project.pid}}">{{project.name}}</option>
                                                 {% endfor %}
