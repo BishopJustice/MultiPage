@@ -6,6 +6,10 @@
     text-align: center;
 }
 
+.nolink {
+  color: inherit;
+  text-decoration: inherit;
+}
 .list-group-item{
     overflow:hidden;
 }
