@@ -18,14 +18,9 @@ def index():
         signin_form = SigninForm()
         return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
 
-    try:
-        projects = db.session.query(Project).filter_by(uid=user.uid).all()
-        items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
-        return render_template('index.html', projects=projects, user=user, items=items, message="")
-    except:
-        signup_form = SignupForm()
-        signin_form = SigninForm()
-        return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
+    projects = db.session.query(Project).filter_by(uid=user.uid).all()
+    items = db.session.query(Item).filter_by(uid=user.uid, state="Open").all()
+    return render_template('index.html', projects=projects, user=user, items=items, message="")
    
 
 @app.route('/project/<int:pid>', methods=['GET'])
@@ -141,7 +136,10 @@ def add_item():
     project = request.form['projectid']
     description = request.form['item_description']
     opened_at = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
-    item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
+    if project:
+        item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
+    else:
+        item = Item(uid=user, description=description, state="Open", opened_at=opened_at)
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
@@ -182,7 +180,15 @@ def delete_link(id):
     db.session.commit()
     return redirect(request.referrer)
 
-
+@app.route('/assign_project', methods=['POST'])
+def assign_project():
+    item_id = request.form['item_id']
+    project_id = request.form['project_id']
+    item = db.session.query(Item).filter_by(id=item_id).one()
+    item.pid = project_id  
+    db.session.add(item)
+    db.session.commit()
+    return redirect(request.referrer)
 
 
 

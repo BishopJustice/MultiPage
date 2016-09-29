@@ -6,6 +6,10 @@
     text-align: center;
 }
 
+.nolink {
+  color: inherit;
+  text-decoration: inherit;
+}
 .list-group-item{
     overflow:hidden;
 }
@@ -16,7 +20,9 @@ th {
     color: white;
 }
 table{
-    margin-top: 46px;
+    margin-top: 20px;
+    /*margin-top: 46px; PROPER NUMBER IF DTABLES LOAD SLOWLY*/
+    margin-bottom: 20px;
 }
 
 .navbar {
