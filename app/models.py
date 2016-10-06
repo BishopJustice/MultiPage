@@ -8,6 +8,7 @@ class User(db.Model):
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True)
+    email_confirmed = db.Column(db.Boolean, unique=False, default=False)
     pwdhash = db.Column(db.String(100))
     joined = db.Column(db.String(200))
    

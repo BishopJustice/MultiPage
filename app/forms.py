@@ -1,9 +1,10 @@
 from flask_wtf import Form
 from wtforms.fields import TextField, BooleanField, TextAreaField, SubmitField, PasswordField
-from wtforms.validators import Required, ValidationError
+from wtforms.validators import Required, ValidationError, DataRequired
 from wtforms import validators
 from models import User
 from app import db
+
 
 
 class ContactForm(Form):
@@ -52,3 +53,10 @@ class SigninForm(Form):
         else:
             self.email.errors.append("Invalid e-mail or password")
             return False
+
+class EmailForm(Form):
+    email = TextField('Email', validators=[validators.DataRequired(), validators.Email()])
+    submit = SubmitField("Send Reset Link")
+
+class PasswordForm(Form):
+    password = PasswordField('Password', validators=[validators.DataRequired()])
