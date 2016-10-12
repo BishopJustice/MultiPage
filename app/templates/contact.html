@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="input">
+        <h2>Contact</h2>
+        {% if success %}
+            <p class="confirmation">Thank you for your message. We'll get back to you shortly.</p>
+        {% else %}
+        <form action="{{ url_for('contact') }}" method=post>
+            
+            {{ form.hidden_tag() }}
+            
+            {{ form.name.label }}
+            {{ form.name }}
+            {% for message in form.name.errors %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            {{ form.email.label }}
+            {{ form.email }}
+            {% for message in form.email.errors %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            {{ form.subject.label }}
+            {{ form.subject }}
+            {% for message in form.subject.errors %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            
+            {{ form.message.label }}
+            {{ form.message }}
+            {% for message in form.message.errors %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            {{ form.submit }}
+        </form>
+        {% endif %}
+    </div>
+{% endblock%}

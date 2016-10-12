@@ -8,8 +8,10 @@ class User(db.Model):
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True)
+    email_confirmed = db.Column(db.Boolean, unique=False, default=False)
     pwdhash = db.Column(db.String(100))
-    joined = db.Column(db.String(200))
+    joined = db.Column(db.DateTime)
+    projects = db.relationship('Project', backref='user', lazy='dynamic')
    
     def __init__(self, firstname, lastname, email, password, joined):
         self.firstname = firstname.title()
@@ -37,13 +39,13 @@ class Item(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key = True)
     pid = db.Column(db.Integer, db.ForeignKey('projects.pid'))
+    uid = db.Column(db.Integer, db.ForeignKey('users.uid'))
     description = db.Column(db.String(500), nullable = False)
     label = db.Column(db.String(50))
-    priority = db.Column(db.String(50))
+    priority = db.Column(db.Boolean)
     state = db.Column(db.String(10), nullable = False)
-    opened_at = db.Column(db.String(200), nullable = False)
-    resolved_at = db.Column(db.String(200))
-    uid = db.Column(db.Integer, db.ForeignKey('users.uid'))
+    opened_at = db.Column(db.DateTime)
+    resolved_at = db.Column(db.DateTime)
 
 
 class Link(db.Model):

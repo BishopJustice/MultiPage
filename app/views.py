@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, url_for, session
 from app import db, app
+from util import security
 from models import User, Project, Item, Link
-from forms import SignupForm, SigninForm
+from forms import SignupForm, SigninForm, ContactForm, EmailForm, PasswordForm
 import datetime
 
 @app.route('/')
@@ -22,7 +23,10 @@ def index():
     items = db.session.query(Item).filter_by(uid=user.uid, state="Open").order_by(Item.opened_at).all()
     return render_template('index.html', projects=projects, user=user, items=items, message="")
 
-   
+@app.route('/test')
+def test():
+    security.send_email("This is an email", "Luke", "test@test.com", "This is a test")
+    return "message sent"
 
 @app.route('/project/<int:pid>', methods=['GET'])
 def project(pid):
@@ -75,30 +79,103 @@ def signup():
         if signup_form.validate() == False:
             return render_template('home.html', signin_form=signin_form, signup_form=signup_form)
         else:
-            joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+            joined = datetime.datetime.now()
             newuser = User(signup_form.firstname.data, signup_form.lastname.data, signup_form.email.data, signup_form.password.data, joined)
             db.session.add(newuser)
             db.session.commit()
+            # Uncomment to send confirmation email
+            # subject = "Confirm your email"
+            # token = security.ts.dumps(newuser.email, salt='email-confirm-key')
+            # confirm_url = url_for(
+            #     'confirm_email',
+            #     token=token,
+            #     _external=True)
+            # html = "Your account was successfully created. Please click the link below to confirm\
+            #         your email address and activate your account:{confirm_url}".format(confirm_url=confirm_url)
+            # security.send_email(subject, newuser.firstname, newuser.email, html)
             session['email'] = newuser.email
             return redirect(url_for('index'))
    
     elif request.method == 'GET':
         return redirect(url_for('index'))
 
+# Uncomment if confirmation email is sent
+# @app.route('/confirm/<token>')
+# def confirm_email(token):
+#     try:
+#         email = security.ts.loads(token, salt="email-confirm-key", max_age=86400)
+#     except:
+#         abort(404)
 
+#     user = User.query.filter_by(email=email).first_or_404()
+#     user.email_confirmed = True
+
+#     db.session.add(user)
+#     db.session.commit()
+
+#     return redirect(url_for('signin'))
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
+    signin_form = SigninForm()
     if request.method == 'POST':
-        signin_form = SigninForm()
         if signin_form.validate() == False:
-            return render_template('home.html', signin_form=signin_form, signup_form=SignupForm())
+            return render_template('signin.html', form=signin_form)
         else:
             session['email'] = signin_form.email.data
         return redirect(url_for('index'))
                  
     elif request.method == 'GET':
-        return redirect(url_for('index'))
+        return render_template('signin.html', form=signin_form)
+
+@app.route('/reset', methods=["GET", "POST"])
+def reset():
+    form = EmailForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            return render_template('reset.html', form=form)
+        else:
+            user = User.query.filter_by(email=form.email.data.lower()).first_or_404()
+            if user:
+                subject = "Password reset requested"
+                token = security.ts.dumps(user.email, salt='recover-key')
+
+                recover_url = url_for(
+                    'reset_with_token',
+                    token=token,
+                    _external=True)
+
+                html = "Click <a href={}> here </a> to change your password".format(recover_url)
+                security.send_email(subject, user.firstname, user.email, html)
+                signup_form = SignupForm()
+                signin_form = SigninForm()
+                message = "Reset email sent to {}".format(user.email)
+                return render_template('home.html', signup_form=signup_form, signin_form=signin_form, message=message)
+            else:
+                return "That user does not exist"
+
+    elif request.method == 'GET':
+        return render_template('reset.html', form=form)
+
+@app.route('/reset/<token>', methods=["GET", "POST"])
+def reset_with_token(token):
+    try:
+        email = security.ts.loads(token, salt="recover-key", max_age=86400)
+    except:
+        abort(404)
+
+    form = PasswordForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=email).first_or_404()
+        user.pwdhash = form.password.data
+        user.set_password(user.pwdhash)
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('signin'))
+
+    return render_template('reset_with_token.html', form=form, token=token)
 
 @app.route('/signout')
 def signout():
@@ -136,7 +213,7 @@ def add_item():
     user = db.session.query(User).filter_by(email = session['email']).first().uid
     project = request.form['projectid']
     description = request.form['item_description']
-    opened_at = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+    opened_at = datetime.datetime.now()
     if project:
         item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
     else:
@@ -149,7 +226,7 @@ def add_item():
 def resolve_item(item_id):
     item = db.session.query(Item).filter_by(id = item_id).first()
     item.state = "Resolved"
-    item.resolved_at = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    item.resolved_at = datetime.datetime.now()
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
@@ -191,6 +268,18 @@ def assign_project():
     db.session.commit()
     return redirect(request.referrer)
 
+@app.route('/contact', methods=['GET','POST'])
+def contact():
+    form = ContactForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            return render_template('contact.html', form=form)
+        else:
+            security.send_self_email(form.subject.data, form.name.data, form.email.data, form.message.data)
+            return render_template('contact.html', success=True, form=form)
+
+    elif request.method == 'GET':
+        return render_template('contact.html', form=form)
 
 
 

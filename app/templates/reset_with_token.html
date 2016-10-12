@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="row">
+        <h2>Reset Password</h2>
+        
+        {% for message in form.password.errors %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+        
+        <form action="{{ url_for('reset_with_token', token=token) }}" method=post>
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.password.label }} {{ form.password }}<br>
+                {{ form.csrf_token }}
+            </div>
+            <br>
+            {{ form.submit(class_="btn btn-default") }}
+        </form>
+    </div>
+{% endblock %}

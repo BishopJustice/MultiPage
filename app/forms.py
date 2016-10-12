@@ -1,9 +1,11 @@
 from flask_wtf import Form
 from wtforms.fields import TextField, BooleanField, TextAreaField, SubmitField, PasswordField
-from wtforms.validators import Required, ValidationError
+from wtforms.validators import Required, ValidationError, DataRequired
 from wtforms import validators
 from models import User
+from flask import session
 from app import db
+
 
 
 class ContactForm(Form):
@@ -52,3 +54,21 @@ class SigninForm(Form):
         else:
             self.email.errors.append("Invalid e-mail or password")
             return False
+
+class EmailForm(Form):
+    email = TextField('Email', validators=[validators.DataRequired(), validators.Email()])
+    submit = SubmitField("Send Reset Link")
+
+    def validate(self):
+      if not Form.validate(self):
+        return False
+      user = db.session.query(User).filter_by(email = self.email.data.lower()).first()
+      if user:
+        return True
+      else:
+        self.email.errors.append("That user does not exist")
+        return False
+
+class PasswordForm(Form):
+    password = PasswordField('Password', validators=[validators.DataRequired()])
+    submit = SubmitField("Change Password")
