@@ -18,5 +18,5 @@ def send_email(subject, name, email, body):
     mail = Mail()
     mail.init_app(app)
     msg = Message(subject, sender='lukecodes@gmail.com', recipients=[email])
-    msg.body = body
+    msg.html = body
     mail.send(msg)

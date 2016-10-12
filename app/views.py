@@ -135,7 +135,7 @@ def reset():
         if form.validate() == False:
             return render_template('reset.html', form=form)
         else:
-            user = User.query.filter_by(email=form.email.data).first_or_404()
+            user = User.query.filter_by(email=form.email.data.lower()).first_or_404()
             if user:
                 subject = "Password reset requested"
                 token = security.ts.dumps(user.email, salt='recover-key')
@@ -145,13 +145,15 @@ def reset():
                     token=token,
                     _external=True)
 
-                html = "Click the following link to reset your password: {}".format(recover_url)
-
+                html = "Click <a href={}> here </a> to change your password".format(recover_url)
                 security.send_email(subject, user.firstname, user.email, html)
-
-                return redirect(url_for('index'))
+                signup_form = SignupForm()
+                signin_form = SigninForm()
+                message = "Reset email sent to {}".format(user.email)
+                return render_template('home.html', signup_form=signup_form, signin_form=signin_form, message=message)
             else:
-                render_template('reset.html', form=form, )
+                return "That user does not exist"
+
     elif request.method == 'GET':
         return render_template('reset.html', form=form)
 

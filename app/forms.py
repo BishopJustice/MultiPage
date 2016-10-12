@@ -3,6 +3,7 @@ from wtforms.fields import TextField, BooleanField, TextAreaField, SubmitField, 
 from wtforms.validators import Required, ValidationError, DataRequired
 from wtforms import validators
 from models import User
+from flask import session
 from app import db
 
 
@@ -59,9 +60,14 @@ class EmailForm(Form):
     submit = SubmitField("Send Reset Link")
 
     def validate(self):
+      if not Form.validate(self):
+        return False
       user = db.session.query(User).filter_by(email = self.email.data.lower()).first()
-      if user != session['email']:
-          self.email.errors.append("Please enter your own email address")
+      if user:
+        return True
+      else:
+        self.email.errors.append("That user does not exist")
+        return False
 
 class PasswordForm(Form):
     password = PasswordField('Password', validators=[validators.DataRequired()])
