@@ -58,5 +58,11 @@ class EmailForm(Form):
     email = TextField('Email', validators=[validators.DataRequired(), validators.Email()])
     submit = SubmitField("Send Reset Link")
 
+    def validate(self):
+      user = db.session.query(User).filter_by(email = self.email.data.lower()).first()
+      if user != session['email']:
+          self.email.errors.append("Please enter your own email address")
+
 class PasswordForm(Form):
     password = PasswordField('Password', validators=[validators.DataRequired()])
+    submit = SubmitField("Change Password")

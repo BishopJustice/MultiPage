@@ -31,7 +31,7 @@
                         <tr>
                             {% for item in open_items %}
                                         <td>{{item.description}}</td>
-                                        <td>{{item.opened_at}}</td>
+                                        <td>{{item.opened_at.date()}}</td>
                                         <td>
                                             <form action="{{ url_for('resolve_item', item_id=item.id)}}" method="post">
                                                 <button class="btn btn-default">Resolve</button>
@@ -59,7 +59,7 @@
                         <tr>
                             {% for item in resolved_items %}
                                         <td>{{item.description}}</td>
-                                        <td>{{item.resolved_at}}</td>
+                                        <td>{{item.resolved_at.date()}}</td>
                                         <td>
                                             <form action="{{ url_for('delete_item', item_id=item.id)}}" method="post">
                                                 <button class="btn btn-default">Delete</button>

@@ -79,40 +79,41 @@ def signup():
         if signup_form.validate() == False:
             return render_template('home.html', signin_form=signin_form, signup_form=signup_form)
         else:
-            joined = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+            joined = datetime.datetime.now()
             newuser = User(signup_form.firstname.data, signup_form.lastname.data, signup_form.email.data, signup_form.password.data, joined)
             db.session.add(newuser)
             db.session.commit()
-            subject = "Confirm your email"
-            token = security.ts.dumps(newuser.email, salt='email-confirm-key')
-            confirm_url = url_for(
-                'confirm_email',
-                token=token,
-                _external=True)
-
-            html = "Your account was successfully created. Please click the link below to confirm\
-                    your email address and activate your account:{confirm_url}".format(confirm_url=confirm_url)
-            security.send_email(subject, newuser.firstname, newuser.email, html)
+            # Uncomment to send confirmation email
+            # subject = "Confirm your email"
+            # token = security.ts.dumps(newuser.email, salt='email-confirm-key')
+            # confirm_url = url_for(
+            #     'confirm_email',
+            #     token=token,
+            #     _external=True)
+            # html = "Your account was successfully created. Please click the link below to confirm\
+            #         your email address and activate your account:{confirm_url}".format(confirm_url=confirm_url)
+            # security.send_email(subject, newuser.firstname, newuser.email, html)
             session['email'] = newuser.email
             return redirect(url_for('index'))
    
     elif request.method == 'GET':
         return redirect(url_for('index'))
 
-@app.route('/confirm/<token>')
-def confirm_email(token):
-    try:
-        email = security.ts.loads(token, salt="email-confirm-key", max_age=86400)
-    except:
-        abort(404)
+# Uncomment if confirmation email is sent
+# @app.route('/confirm/<token>')
+# def confirm_email(token):
+#     try:
+#         email = security.ts.loads(token, salt="email-confirm-key", max_age=86400)
+#     except:
+#         abort(404)
 
-    user = User.query.filter_by(email=email).first_or_404()
-    user.email_confirmed = True
+#     user = User.query.filter_by(email=email).first_or_404()
+#     user.email_confirmed = True
 
-    db.session.add(user)
-    db.session.commit()
+#     db.session.add(user)
+#     db.session.commit()
 
-    return redirect(url_for('signin'))
+#     return redirect(url_for('signin'))
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
@@ -210,7 +211,7 @@ def add_item():
     user = db.session.query(User).filter_by(email = session['email']).first().uid
     project = request.form['projectid']
     description = request.form['item_description']
-    opened_at = unicode(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+    opened_at = datetime.datetime.now()
     if project:
         item = Item(uid=user, pid=project, description=description, state="Open", opened_at=opened_at)
     else:
@@ -223,7 +224,7 @@ def add_item():
 def resolve_item(item_id):
     item = db.session.query(Item).filter_by(id = item_id).first()
     item.state = "Resolved"
-    item.resolved_at = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    item.resolved_at = datetime.datetime.now()
     db.session.add(item)
     db.session.commit()
     return redirect(request.referrer)
