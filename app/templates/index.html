@@ -85,7 +85,8 @@
                 <tbody>
                     <tr>
                         {% for item in items %}
-                            <td>{{item.description}}</td>
+                            {% if item.pid != 26 %}
+                                <td>{{item.description}}</td>
                             <td>
                                 {% for project in projects %}
                                     {% if item.pid == project.pid %}
@@ -104,6 +105,7 @@
                                         </form>
                                     </td>
                                 </tr>
+                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
