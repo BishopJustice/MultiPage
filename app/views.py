@@ -3,6 +3,7 @@ from app import db, app
 from util import security
 from models import User, Project, Item, Link
 from forms import SignupForm, SigninForm, ContactForm, EmailForm, PasswordForm
+from sqlalchemy import desc
 import datetime
 
 @app.route('/')
@@ -19,7 +20,7 @@ def index():
         signin_form = SigninForm()
         return render_template('home.html', signup_form=signup_form, signin_form=signin_form)
 
-    projects = db.session.query(Project).filter_by(uid=user.uid).all()
+    projects = db.session.query(Project).filter_by(uid=user.uid).order_by(desc(Project.active)).all()
     items = db.session.query(Item).filter_by(uid=user.uid, state="Open").order_by(Item.opened_at).all()
     return render_template('index.html', projects=projects, user=user, items=items, message="")
 
@@ -265,6 +266,17 @@ def assign_project():
     item = db.session.query(Item).filter_by(id=item_id).one()
     item.pid = project_id  
     db.session.add(item)
+    db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/activate/<int:pid>', methods=['POST'])
+def activate(pid):
+    project = db.session.query(Project).filter_by(pid=pid).one()
+    if project.active:
+        project.active = False
+    else:
+        project.active = True
+    db.session.add(project)
     db.session.commit()
     return redirect(request.referrer)
 

@@ -10,10 +10,10 @@
   color: inherit;
   text-decoration: inherit;
 }
+
 .list-group-item{
-    overflow:hidden;
+    text-align: left;
 }
-.list-group {line-height:30px}
 
 th {
     background-color: #4CAF50;
@@ -45,9 +45,7 @@ form label {
     margin-bottom: 0px
 }
 
-.list-group-item{
-    text-align: center;
-}
+
 
 .glyphicon {
     font-size: 3em;
@@ -64,67 +62,6 @@ form label {
 #error{
     display: none;
 }
-
-
- /*
-form input#name,
-form input#email,
-form input#subject {
-  width: 400px;
-  background-color: #fafafa;
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
-  border: 1px solid #cccccc;
-  padding: 5px;
-  font-size: 1.1em;
-}
- 
-form textarea#message {
-  width: 500px;
-  height: 100px;
-  background-color: #fafafa;
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
-  border: 1px solid #cccccc;
-  margin-bottom: 10px;
-  padding: 5px;
-  font-size: 1.1em;
-}
- 
-
- 
-form input#submit:hover{
-  cursor: pointer;
-  border:1px solid #c1c1c1; 
-  background-color: #dbdbdb;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dbdbdb), color-stop(100%, #cccccc));
-  background-image: -webkit-linear-gradient(top, #dbdbdb, #cccccc);
-  background-image: -moz-linear-gradient(top, #dbdbdb, #cccccc);
-  background-image: -ms-linear-gradient(top, #dbdbdb, #cccccc);
-  background-image: -o-linear-gradient(top, #dbdbdb, #cccccc);
-  background-image: linear-gradient(top, #dbdbdb, #cccccc);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#dbdbdb, endColorstr=#cccccc);
-}
-*/
-
-/* Signup form 
-form input#firstname,
-form input#lastname,
-form input#password {
-  width: 400px;
-  background-color: #fafafa;
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
-  border: 1px solid #cccccc;
-  padding: 5px;
-  font-size: 1.1em;
-}
- 
-form input#password {
-  margin-bottom: 10px;
-}*/
 
 /* Message flashing */
 .flash {
