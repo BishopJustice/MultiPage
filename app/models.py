@@ -31,6 +31,7 @@ class Project(db.Model):
     pid = db.Column(db.Integer, primary_key = True)
     uid = db.Column(db.Integer, db.ForeignKey('users.uid'))
     name = db.Column(db.String(50))
+    active = db.Column(db.Boolean, unique=False, default=True)
     items = db.relationship("Item")
     links = db.relationship("Link")
 

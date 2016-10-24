@@ -26,11 +26,13 @@
             {% if 'email' in session %}
                 <ul class="nav navbar-nav">
                     {% for each in projects %}
+                        {% if each.active %}
                         <li {% if request.path == url_for('project', pid=each.pid) %}class="active" {% endif %}>
-                        <a href="{{ url_for('project', pid=each.pid) }}">
-                            {{ each.name }}
-                        </a>
-                    </li>
+                            <a href="{{ url_for('project', pid=each.pid) }}">
+                                {{ each.name }}
+                            </a>
+                        </li>
+                        {% endif %}
                 {% endfor %}
             </ul>
             
